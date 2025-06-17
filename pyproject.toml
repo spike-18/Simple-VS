@@ -1,0 +1,42 @@
+[project]
+name = "simple-vs"
+version = "0.1.0"
+description = "Simple computer vision system for cubic world with some restrictions."
+authors = [{name = "Kirill Madorskii",email = "madorskii.kv@gmail.com"}]
+readme = "README.md"
+
+requires-python = ">=3.11"
+
+dependencies = [
+    "numpy (>=2.2.3,<3.0.0)",
+    "matplotlib (>=3.10.1,<4.0.0)",
+    "click (>=8.1.8,<9.0.0)",
+    "scikit-image (>=0.25.2,<0.26.0)"
+]
+
+[project.scripts]
+simple-vs = "simple_vs.cli:cli"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.2"
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D", "PLR2004", "FBT001", "COM812", "S101", "ERA001", "ANN001"]
+fixable = ["ALL"]
+# unfixable = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
