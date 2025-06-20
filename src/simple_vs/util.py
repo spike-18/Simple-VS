@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pyvista as pv
+
 from matplotlib import cm
 from matplotlib.colors import LightSource
 
@@ -68,32 +70,15 @@ def plot_map(image: np.ndarray, image_map: np.ndarray, save: bool, map_name="Map
     plt.show()
 
 
-def plot_interpretation(image: np.ndarray, coords: tuple[np.array]) -> None:
-
-    x_img = coords[0]
-    y_img = coords[1]
-    z_img = coords[2]
+def plot_interpretation(image: np.ndarray, points: np.ndarray) -> None:
 
     H, W = image.shape[0], image.shape[1]
 
-    X_3d = np.linspace(np.min(x_img), np.max(x_img), W)
-    Y_3d = np.linspace(np.min(z_img), np.max(z_img), H)
+    mesh = pv.StructuredGrid()
+    # Set the coordinates from the numpy array
+    mesh.points = points
+    # set the dimensions
+    mesh.dimensions = [W, H, 1]
 
-    X, Y = np.meshgrid(X_3d, Y_3d)
-    Z = np.full((Y_3d.size, X_3d.size), np.nan)
-
-    
-
-
-
-    fig = plt.figure(figsize=(10, 8))
-    ax = fig.add_subplot(111, projection="3d")
-
-    ax.plot_surface(X, Y, Z, rstride=1)
-    ax.scatter(x_img, z_img, y_img, color="red")
-
-    ax.set_xlabel("X")
-    ax.set_ylabel("Z")
-    ax.set_zlabel("Y")
-
-    plt.show()
+    # and then inspect it
+    mesh.plot(show_edges=True, show_grid=True, cpos='xy')

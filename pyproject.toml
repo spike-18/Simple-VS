@@ -11,7 +11,8 @@ dependencies = [
     "numpy (>=2.2.3,<3.0.0)",
     "matplotlib (>=3.10.1,<4.0.0)",
     "click (>=8.1.8,<9.0.0)",
-    "scikit-image (>=0.25.2,<0.26.0)"
+    "scikit-image (>=0.25.2,<0.26.0)",
+    "pyvista (>=0.45.2,<0.46.0)"
 ]
 
 [project.scripts]
