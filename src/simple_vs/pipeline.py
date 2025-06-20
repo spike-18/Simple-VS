@@ -8,20 +8,22 @@ from .util import plot_map, sobel_grad, plot_interpretation
 def process_image(input_img: np.ndarray) -> np.ndarray:
     image = rgba2rgb(input_img) if input_img.shape[2] == 4 else input_img
 
-    image = image[::10, ::10]
-    input_img = input_img[::10, ::10]
+
+    # image = image[::10, ::10]
 
     height, width = image.shape[0], image.shape[1]
 
     points = np.zeros((height * width, 3), dtype=np.float32)
     points[:, 0] = np.arange(0, height * width) % width
     points[:, 1] = np.arange(0, height * width) // width
-    points[:, 2] = image.reshape((height * width, 3))[:, 0] * 20
+    points[:, 2] = image.reshape((height * width, 3))[:, 0] * 100
 
     vert_edges, horiz_edges = get_edges(image, threshold=0.1)
     fig_map = get_figures(image)
 
     plot_interpretation(image, points)
+    
+    
 
 
 def get_edges(image: np.ndarray, threshold=0.15) -> tuple[np.ndarray, np.ndarray]:
