@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.colors as mcolors
 
 from skimage.color import rgb2gray, rgba2rgb
 
@@ -8,22 +9,36 @@ from .util import plot_map, sobel_grad, plot_interpretation
 def process_image(input_img: np.ndarray) -> np.ndarray:
     image = rgba2rgb(input_img) if input_img.shape[2] == 4 else input_img
 
-
-    # image = image[::10, ::10]
+    image = image[::4, ::4]
 
     height, width = image.shape[0], image.shape[1]
 
     points = np.zeros((height * width, 3), dtype=np.float32)
     points[:, 0] = np.arange(0, height * width) % width
-    points[:, 1] = np.arange(0, height * width) // width
-    points[:, 2] = image.reshape((height * width, 3))[:, 0] * 100
+    points[:, 2] = np.arange(0, height * width) // width
+    # points[:, 1] = image.reshape((height * width, 3))[:, 0] * 100
 
     vert_edges, horiz_edges = get_edges(image, threshold=0.1)
-    fig_map = get_figures(image)
+    ground_map = get_ground(image)
+    # ground_map = np.logical_or(ground_map, vert_edges)
+    # ground_map = np.logical_or(ground_map, horiz_edges)
 
-    plot_interpretation(image, points)
-    
-    
+    # plot_map(image, ~ground_map, map_name="Figures", save=False)
+
+    # Set y = 0 to all background pixels
+
+    ground_map = ~ground_map.reshape(height*width,).astype(bool)
+    points[ground_map, 1] = 0
+
+
+
+
+
+
+
+
+    # plot_interpretation(image, points)
+
 
 
 def get_edges(image: np.ndarray, threshold=0.15) -> tuple[np.ndarray, np.ndarray]:
@@ -57,20 +72,13 @@ def get_edges(image: np.ndarray, threshold=0.15) -> tuple[np.ndarray, np.ndarray
     return vertical_edges, horizontal_edges
 
 
-def get_figures(image: np.ndarray, threshold=0.3) -> np.ndarray:
+def get_ground(image: np.ndarray, sat_tres=0.5, val_tres=0.4) -> np.ndarray:
     image = rgba2rgb(image) if image.shape[2] == 4 else image
 
-    norm_image = image.astype(np.float32) / 255.0
+    hsv_image = mcolors.rgb_to_hsv(image)
 
-    max_c = np.max(norm_image, axis=2)
-    min_c = np.min(norm_image, axis=2)
-    delta = max_c - min_c
+    ground_map = np.logical_and(hsv_image[:,:,1] < sat_tres, hsv_image[:,:,2] > val_tres)
 
-    sat_map = delta / max_c
-    sat_map[np.isinf(sat_map)] = 0
+    plot_map(image, ~ground_map, map_name="Figures", save=False)
 
-    fig_map = sat_map > threshold
-
-    # plot_map(image, fig_map, map_name="Figures", save=False)
-
-    return fig_map
+    return ground_map

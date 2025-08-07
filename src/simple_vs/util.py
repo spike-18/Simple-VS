@@ -73,6 +73,7 @@ def plot_map(image: np.ndarray, image_map: np.ndarray, save: bool, map_name="Map
 def plot_interpretation(image: np.ndarray, points: np.ndarray) -> None:
 
     H, W = image.shape[0], image.shape[1]
+    points[:, 1] = -points[:, 1]
 
     plotter = pv.Plotter()
 
@@ -83,5 +84,5 @@ def plot_interpretation(image: np.ndarray, points: np.ndarray) -> None:
     plotter.add_mesh(mesh, show_edges=False)
 
     plotter.show_grid()
-    plotter.view_xy()
+    plotter.camera_position = "xz"
     plotter.show()
